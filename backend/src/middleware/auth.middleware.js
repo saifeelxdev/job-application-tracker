@@ -1,23 +1,17 @@
 const jwt = require('jsonwebtoken');
 
 const authMiddlware = async(req, res, next) => {
-    let token;
+    const authHeader = req.headers.authorization;
 
     //check auth header
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer ')
-    ) {
-        token = req.headers.authorization.split(' ')[1];
-    }
-
-    //token not available
-    if (!token) {
-        return res.status(401).josn({
+    if (!authHeader?.startsWith('Bearer ')) {
+        return res.status(401).json({
             success: false,
-            message: 'Not authorized, token missing'
+            message: 'Not authorized, token invalid or missing.'
         });
     }
+
+    const token = authHeader.split(' ')[1];
 
     //verify token
     try {
@@ -35,4 +29,4 @@ const authMiddlware = async(req, res, next) => {
     }
 };
 
-module.exports = authMiddlware
+module.exports = authMiddlware;
