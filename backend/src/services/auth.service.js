@@ -1,76 +1,93 @@
-const AppError = require('../utils/appError');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const AppError = require("../utils/appError");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const SALT_ROUNDS = 10;
-const { createUser,
-        findUserByEmail } = require('../models/user.model');
- 
-const registerUser = async ({ name, email, password }) => {
+const {
+  createUser,
+  findUserByEmail,
+  createRecruiter,
+} = require("../models/user.model");
 
-    if ( !name || !email || !password ) {
-        throw new AppError('Name, email and password are required', 400);
-    }
+const registerUser = async ({ name, email, password, role }) => {
+  if (!name || !email || !password) {
+    throw new AppError("Name, email and password are required", 400);
+  }
 
-    const existingUser = await findUserByEmail(email);
-    if ( existingUser) {
-        throw new AppError('User already exists', 409);
-    }
-    
-    const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
+  const existingUser = await findUserByEmail(email);
+  if (existingUser) {
+    throw new AppError("User already exists", 409);
+  }
 
-    const userId = await createUser({
-        name,
-        email,
-        password_hash,
-        role: 'user'
-    });
+  const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
 
-    return { id: userId, name, email, role: 'user'};
+  const userId = await createUser({
+    name,
+    email,
+    password_hash,
+    role,
+  });
+
+  return { id: userId, name, email, role };
+};
+
+const registerRecruiter = async ({ name, email, password }) => {
+  if (!name || !email || !password) {
+    throw new AppError("Name, email and password are required", 400);
+  }
+
+  const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
+
+  const userId = await createRecruiter({
+    name,
+    email,
+    password_hash,
+  });
+
+  return { id: userId, name, email };
 };
 
 const loginUser = async ({ email, password }) => {
+  if (!email || !password) {
+    throw new AppError("Email and password are required.", 400);
+  }
 
-    if ( !email || !password ) {
-        throw new AppError('Email and password are required.', 400);
-    }
+  email = email.toLowerCase().trim();
 
-    email = email.toLowerCase().trim();
+  const user = await findUserByEmail(email);
 
-    const user = await findUserByEmail(email);
+  if (!user) {
+    throw new AppError("User doesn't exist", 404);
+  }
 
-    if (!user) {
-        throw new AppError("User doesn't exist", 404);
-    }
+  const isMatch = await bcrypt.compare(password, user.password_hash);
 
-    const isMatch = await bcrypt.compare(password, user.password_hash);
+  if (!isMatch) {
+    throw new AppError("Invalid email or password", 401);
+  }
 
-    if (!isMatch) {
-        throw new AppError('Invalid email or password', 401);
-    }
+  const token = jwt.sign(
+    {
+      sub: user.id,
+      role: user.role,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" },
+  );
 
-
-    const token = jwt.sign(
-        {
-            sub: user.id,
-            role: user.role
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: '1d' }
-    );
-
-    return {
-        token,
-        user: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role
-        }
-    };
-}
+  return {
+    token,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  };
+};
 
 module.exports = {
-    registerUser,
-    loginUser,
+  registerUser,
+  registerRecruiter,
+  loginUser,
 };

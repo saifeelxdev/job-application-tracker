@@ -1,6 +1,7 @@
 #job-application-tracker -- Backend
 
 ## Setup
+
 1. Clone repo
 2. change directory to backend
 3. npm install
@@ -8,6 +9,8 @@
 5. npm run dev
 
 ## Tech Stack
+
 -Node.js
 -Express.js
 -MySQL
+-React

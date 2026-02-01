@@ -1,5 +1,6 @@
 function InputField({
   label,
+  name,
   type = 'text',
   value,
   onChange,
@@ -15,6 +16,7 @@ function InputField({
 
       <input
         id={id}
+        name={name}
         className="text-lg px-2 py-2 rounded-lg"
         type={type}
         value={value}
