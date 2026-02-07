@@ -1,10 +1,8 @@
 import InputField from '../components/InputField/InputField';
 import Button from '../components/Button/Button';
-import { useNavigate } from 'react-router-dom';
 import useForm from '../hooks/useForm';
 import useAuth from '../hooks/useAuth';
 function Login() {
-  const navigate = useNavigate();
   const { formData, handleChange } = useForm({
     email: '',
     password: '',

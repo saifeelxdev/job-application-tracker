@@ -6,23 +6,29 @@ function InputField({
   onChange,
   placeholder,
   className = '',
+  wrapperClassName = '',
+  labelClassName = '',
   id,
 }) {
   return (
     <>
-      <label className="text-xl" htmlFor={id}>
-        {label}
-      </label>
+      <div className={wrapperClassName}>
+        {label && (
+          <label className={`text-xl ${labelClassName}`} htmlFor={id}>
+            {label}
+          </label>
+        )}
 
-      <input
-        id={id}
-        name={name}
-        className="text-lg px-2 py-2 rounded-lg"
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-      />
+        <input
+          id={id}
+          name={name}
+          className={`text-lg w-full border m-4 p-2 rounded-lg ${className}`}
+          type={type}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+        />
+      </div>
     </>
   );
 }

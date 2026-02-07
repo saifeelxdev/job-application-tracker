@@ -20,6 +20,8 @@ const createRecruiter = async ({ name, email, password_hash }) => {
     `,
     [name, email, password_hash],
   );
+
+  return result.insertId;
 };
 
 const findUserByEmail = async (email) => {
