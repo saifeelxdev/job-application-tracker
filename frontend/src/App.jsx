@@ -6,12 +6,13 @@ import Recruiter from './pages/Recruiter';
 import Candidate from './pages/Candidate';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import Unauthorized from './pages/Unauthorized';
+import CreateJob from './pages/Recruiter/CreateJob';
+
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Register />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<Home />}></Route>
@@ -20,6 +21,14 @@ function App() {
             element={
               <ProtectedRoutes allowedRoles={['recruiter']}>
                 <Recruiter />
+              </ProtectedRoutes>
+            }
+          ></Route>
+          <Route
+            path="/recruiter/job"
+            element={
+              <ProtectedRoutes allowedRoles={['recruiter']}>
+                <CreateJob />
               </ProtectedRoutes>
             }
           ></Route>
