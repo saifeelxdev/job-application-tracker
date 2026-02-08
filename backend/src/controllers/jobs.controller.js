@@ -5,7 +5,6 @@ const jobController = asyncHandler(async (req, res) => {
     title,
     jobType,
     location,
-    status,
     deadline,
     description,
     salary,
@@ -26,7 +25,6 @@ const jobController = asyncHandler(async (req, res) => {
     title,
     jobType,
     location,
-    status: "open",
     deadline,
   });
 

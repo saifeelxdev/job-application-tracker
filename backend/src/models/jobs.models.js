@@ -6,15 +6,14 @@ const createJob = async ({
   title,
   jobType,
   location,
-  status,
   deadline,
 }) => {
   const [result] = await pool.execute(
     `
-      INSERT INTO jobs (company_id, title, job_type, location, status, application_deadline)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO jobs (company_id, title, job_type, location,  application_deadline)
+      VALUES (?, ?, ?, ?, ?)
     `,
-    [recruiterId, title, jobType, location, status, deadline],
+    [recruiterId, title, jobType, location, deadline],
   );
 
   return result.insertId;
